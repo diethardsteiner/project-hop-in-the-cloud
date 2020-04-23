@@ -13,13 +13,15 @@ export HOP_METASTORE_FOLDER=/Users/diethardsteiner/git/project-hop-in-the-cloud/
 
 # Running the Container
 
+The container image is available on [Docker Hub](https://hub.docker.com/r/diethardsteiner/project-hop).
+
 ## Container Folder Structure
 
 
 Directory	| Description
 ---	|---
 `/opt/project-hop`	| location of the hop package
-`/home/hop`	| here you should mount a directory that contains `.hop` as well your workflows and pipelines.
+`/home/hop`	| here you should mount a directory that contains `.hop` at the root as well your workflows and pipelines.
 
 ## Environment Variables
 
@@ -48,7 +50,7 @@ docker run -it --rm \
   --env HOP_RUN_PARAMETERS=PARAM_TEST=Hello \
   -v /Users/diethardsteiner/git/project-a:/home/hop \
   --name my-simple-hop-container \
-  diethardsteiner/hop:0.10
+  diethardsteiner/project-hop:0.20-20200422.234410-25
 ```
 
 ## Shortcomings

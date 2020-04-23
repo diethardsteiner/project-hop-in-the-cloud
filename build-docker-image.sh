@@ -1,12 +1,14 @@
 #!/bin/bash
 
+DOCKER_HOP_TAG=0.20-20200422.234410-25
 WORKING_DIR=${0:a:h}
 
 # download hop
-wget -O ./resources/hop.zip https://artifactory.project-hop.org/artifactory/hop-snapshots-local/org/hop/hop-assemblies-client/0.20-SNAPSHOT/hop-assemblies-client-0.20-20200422.193211-22.zip
+wget -O ./resources/hop.zip https://artifactory.project-hop.org/artifactory/hop-snapshots-local/org/hop/hop-assemblies-client/0.20-SNAPSHOT/hop-assemblies-client-0.20-20200422.234410-25.zip
 unzip ./resources/hop.zip
+
 # build docker image
-docker build -t diethardsteiner/hop:0.10 .
+docker build -t diethardsteiner/project-hop:${DOCKER_HOP_TAG} .
 # start container - pipeline example
 docker run -it --rm \
   --env HOP_LOG_LEVEL=Basic \
@@ -15,7 +17,7 @@ docker run -it --rm \
   --env HOP_RUN_PARAMETERS= \
   -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
-  diethardsteiner/hop:0.10
+  diethardsteiner/project-hop:${DOCKER_HOP_TAG}
   
 #   --env HOP_METASTORE_FOLDER=/home/hop/metastore \
   
@@ -27,7 +29,7 @@ docker run -it --rm \
   --env HOP_RUN_PARAMETERS=PARAM_TEST=Hello \
   -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
-  diethardsteiner/hop:0.10
+  diethardsteiner/project-hop:${DOCKER_HOP_TAG}
   
 #   --env HOP_HOME=/home/hop/ \
 #   --env HOP_METASTORE_FOLDER=/home/hop/metastore \
@@ -40,4 +42,9 @@ docker run -it --rm \
 docker run -it --rm \
   -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
-  diethardsteiner/hop:0.10
+  diethardsteiner/project-hop:${DOCKER_HOP_TAG}
+  
+  
+# publish
+docker login --username=diethardsteiner
+docker push diethardsteiner/project-hop:${DOCKER_HOP_TAG}
