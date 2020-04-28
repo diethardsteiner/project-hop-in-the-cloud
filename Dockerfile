@@ -61,6 +61,4 @@ VOLUME ["/home/hop"]
 USER hop
 ENV PATH=$PATH:${DEPLOYMENT_PATH}/hop
 WORKDIR /home/hop
-# only used for debugging
-# CMD ["/bin/bash"]
 ENTRYPOINT ["/opt/project-hop/load-and-execute.sh"]

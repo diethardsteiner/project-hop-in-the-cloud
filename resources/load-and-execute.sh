@@ -19,11 +19,21 @@ error_exit () {
 # retrieve files from volume
 # ... done via Dockerfile via specifying a volume ... 
 
-# Run main job
-${DEPLOYMENT_PATH}/hop/hop-run.sh \
-  --file=${HOP_FILE_PATH} \
-  --runconfig=${HOP_RUN_CONFIG} \
-  --level=${HOP_LOG_LEVEL} \
-  --parameters=${HOP_RUN_PARAMETERS} \
-  2>&1 | tee ${HOP_LOG_PATH}
+
+
+if [ -z "${HOP_FILE_PATH}" ]
+then
+  echo "=== >> === >> === >> === >> === >> === >> === >> === >> === >> === >> "
+  echo "Since no file name was provided, we will start a long-lived process."
+  echo "=== >> === >> === >> === >> === >> === >> === >> === >> === >> === >> "
+  /bin/bash
+else
+  # Run main job
+  ${DEPLOYMENT_PATH}/hop/hop-run.sh \
+    --file=${HOP_FILE_PATH} \
+    --runconfig=${HOP_RUN_CONFIG} \
+    --level=${HOP_LOG_LEVEL} \
+    --parameters=${HOP_RUN_PARAMETERS} \
+    2>&1 | tee ${HOP_LOG_PATH}
+fi
   

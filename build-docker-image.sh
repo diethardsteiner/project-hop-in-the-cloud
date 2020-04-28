@@ -1,14 +1,17 @@
 #!/bin/bash
 
-DOCKER_HOP_TAG=0.20-20200422.234410-25
+DOCKER_HOP_TAG=0.20-20200428.133614-50
 WORKING_DIR=${0:a:h}
 
 # download hop
-wget -O ./resources/hop.zip https://artifactory.project-hop.org/artifactory/hop-snapshots-local/org/hop/hop-assemblies-client/0.20-SNAPSHOT/hop-assemblies-client-0.20-20200422.234410-25.zip
+wget -O ./resources/hop.zip https://artifactory.project-hop.org/artifactory/hop-snapshots-local/org/hop/hop-assemblies-client/0.20-SNAPSHOT/hop-assemblies-client-${DOCKER_HOP_TAG}.zip
 unzip ./resources/hop.zip
 
 # build docker image
 docker build -t diethardsteiner/project-hop:${DOCKER_HOP_TAG} .
+
+# start tests ...
+
 # start container - pipeline example
 docker run -it --rm \
   --env HOP_LOG_LEVEL=Basic \
@@ -26,7 +29,7 @@ docker run -it --rm \
   --env HOP_LOG_LEVEL=Basic \
   --env HOP_FILE_PATH=/home/hop/pipelines-and-workflows/main.hwf \
   --env HOP_RUN_CONFIG=classic \
-  --env HOP_RUN_PARAMETERS=PARAM_TEST=Hello \
+  --env HOP_RUN_PARAMETERS=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=1 \
   -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
   diethardsteiner/project-hop:${DOCKER_HOP_TAG}
@@ -38,11 +41,13 @@ docker run -it --rm \
 # $HOP_HOME is support correctly, however, not $HOP_METASTORE_FOLDER
 # hop still expects the metastore to reside in $HOME/.hop/metastore
 
-# for debugging only if image was created with CMD option
+# start container - long-lived process example
 docker run -it --rm \
   -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
   diethardsteiner/project-hop:${DOCKER_HOP_TAG}
+
+# testing finished ...
   
   
 # publish

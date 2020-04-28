@@ -1,5 +1,7 @@
 # project-hop-in-the-cloud
 
+A **Hop Docker image** supporting both **short-lived** and **long-lived** setups.
+
 ## Hop Config
 
 Set HOP_HOME to the `project-a` directory (absolute path) when using Hop locally (on your laptop).
@@ -39,10 +41,11 @@ Environment Variable	| Description
 
 ## How to run the Container
 
+The most common use case will be that you run a **short-lived container** to just complete one Hop workflow or pipeline.
 
 Example for running a **workflow**:
 
-```
+```bash
 docker run -it --rm \
   --env HOP_LOG_LEVEL=Basic \
   --env HOP_FILE_PATH=/home/hop/pipelines-and-workflows/main.hwf \
@@ -53,6 +56,39 @@ docker run -it --rm \
   diethardsteiner/project-hop:0.20-20200422.234410-25
 ```
 
+If you need a **long-lived container**, this option is also available. Run this command e.g.:
+
+```bash
+docker run -it --rm \
+  -v /Users/diethardsteiner/git/project-a:/home/hop \
+  --name my-simple-hop-container \
+  diethardsteiner/project-hop:0.20-20200422.234410-25
+```
+
 ## Shortcomings
 
 - **Metastore**: `HOP_METASTORE_HOME` does not seem to be picked up by Hop. Moreover the Metastore is expected to reside in the default location (`$HOME/.hop/metastore`). Hence it is also not recommended to change `HOP_HOME`. The Metastore is require for the run configuration.
+- **Hop Server** is not supported yet.
+
+
+# Local Development
+
+## How to run the workflow
+
+To just test the workflow locally without Docker:
+
+```
+~/apps/hop/hop-run.sh \
+  --file=/Users/diethardsteiner/git/project-hop-in-the-cloud/project-a/pipelines-and-workflows/main.hwf \
+  --runconfig=classic \
+  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=2
+```
+
+To test the workflow within the **Docker container**:  
+
+```
+./hop-run.sh \
+  --file=/home/hop/pipelines-and-workflows/main.hwf \
+  --runconfig=classic \
+  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=2
+```
