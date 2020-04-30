@@ -24,9 +24,9 @@ error_exit () {
 if [ -z "${HOP_FILE_PATH}" ]
 then
   echo "=== >> === >> === >> === >> === >> === >> === >> === >> === >> === >> "
-  echo "Since no file name was provided, we will start a long-lived process."
+  echo "Since no file name was provided, we will start hop server."
   echo "=== >> === >> === >> === >> === >> === >> === >> === >> === >> === >> "
-  /bin/bash
+  ${DEPLOYMENT_PATH}/hop/hop-server.sh 127.0.0.1 8080 -u cluster -p cluster
 else
   # Run main job
   ${DEPLOYMENT_PATH}/hop/hop-run.sh \

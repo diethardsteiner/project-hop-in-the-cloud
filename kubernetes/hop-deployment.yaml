@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hop-deployment
+  labels:
+    app: hop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hop
+  template:
+    metadata:
+      labels:
+        app: hop
+    spec:
+      initContainers:
+      - name: clone-git-repo
+        image: alpine/git
+        volumeMounts:
+        - name: git-repo-volume
+          mountPath: /tmp/git-repo
+          readOnly: false
+        command: ['sh', '-c', 
+          'cd /tmp/git-repo; git clone https://github.com/diethardsteiner/project-hop-in-the-cloud.git; mv project-hop-in-the-cloud/project-a/.hop .; chmod -R 777 .hop; echo $(ls -la)']
+      containers:
+      - name: hop-server
+        image: diethardsteiner/project-hop:0.20-20200429.230019-56
+        volumeMounts:
+        - name: git-repo-volume
+          mountPath: /home/hop
+          readOnly: false
+        env:
+          - name: HOP_LOG_LEVEL
+            value: "Basic"
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1"
+      volumes:
+        - name: git-repo-volume
+          emptyDir: {}

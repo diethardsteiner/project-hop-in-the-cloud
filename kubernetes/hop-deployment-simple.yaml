@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hop-deployment
+  labels:
+    app: hop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hop
+  template:
+    metadata:
+      labels:
+        app: hop
+    spec:
+      containers:
+      - name: hop-server
+        image: diethardsteiner/project-hop:0.20-20200429.230019-56
+        env:
+          - name: HOP_LOG_LEVEL
+            value: "Basic"
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1"

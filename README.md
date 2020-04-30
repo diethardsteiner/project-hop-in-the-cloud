@@ -73,7 +73,7 @@ docker run -it --rm \
 
 # Local Development
 
-## How to run the workflow
+## How to run the workflow locally
 
 To just test the workflow locally without Docker:
 
@@ -91,4 +91,12 @@ To test the workflow within the **Docker container**:
   --file=/home/hop/pipelines-and-workflows/main.hwf \
   --runconfig=classic \
   --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=2
+```
+
+## How to run the workflow within the Docker container
+
+If you spin up a docker container with the hop server running:
+
+```
+./hop-run.sh --file=/home/hop/project-hop-in-the-cloud/project-a/pipelines-and-workflows/main.hwf --runconfig=classic --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=1
 ```
