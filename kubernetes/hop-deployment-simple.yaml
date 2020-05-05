@@ -16,12 +16,10 @@ spec:
     spec:
       containers:
       - name: hop-server
-        image: diethardsteiner/project-hop:0.20-20200429.230019-56
+        image: diethardsteiner/project-hop:0.20-20200505.141953-75
         env:
           - name: HOP_LOG_LEVEL
             value: "Basic"
-          - name: HOP_CONFIG_DIRECTORY
-            value: "/files/config/hop/config"
         resources:
           requests:
             memory: "4Gi"

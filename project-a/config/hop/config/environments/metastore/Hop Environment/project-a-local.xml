@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <element>
-  <id>project-a-dev</id>
+  <id>project-a-local</id>
   <value/>
   <type>String</type>
   <children>
@@ -84,7 +84,7 @@
       <type>String</type>
     </child>
   </children>
-  <name>project-a-dev</name>
+  <name>project-a-local</name>
   <security>
     <owner/>
     <owner-permissions-list/>
