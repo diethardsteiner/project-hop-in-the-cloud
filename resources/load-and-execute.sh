@@ -31,6 +31,7 @@ else
   # Run main job
   ${DEPLOYMENT_PATH}/hop/hop-run.sh \
     --file=${HOP_FILE_PATH} \
+    --environment=${HOP_RUN_ENVIRONMENT} \
     --runconfig=${HOP_RUN_CONFIG} \
     --level=${HOP_LOG_LEVEL} \
     --parameters=${HOP_RUN_PARAMETERS} \

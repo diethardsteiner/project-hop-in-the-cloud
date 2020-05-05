@@ -58,6 +58,7 @@ Ok, let's at least print out the value
 of a parameters:
 
 PARAM_TEST: ${PARAM_LOG_MESSAGE}
+PROP_SAY_SOMETHING: ${PROP_SAY_SOMETHING}
 
 ====================</logmessage>
       <loglevel>Basic</loglevel>

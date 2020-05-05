@@ -2,16 +2,21 @@ FROM openjdk:8-alpine
 MAINTAINER Diethard Steiner
 # path to where the artefacts should be deployed to
 ENV DEPLOYMENT_PATH=/opt/project-hop
+# volume mount point
+ENV VOLUME_MOUNT_POINT=/files
 # parent directory in which the hop config artefacts live
 # ENV HOP_HOME= ... left to default for now since metastore has to be in default location
-# path to hop metastore
-# ENV HOP_METASTORE_FOLDER= ... not supported for now
+# => since the environment support was added now, we can set the metastore location via this one
 # specify the hop log level
 ENV HOP_LOG_LEVEL=Basic
 # path to hop workflow or pipeline e.g. ~/project/main.hwf
 ENV HOP_FILE_PATH=
 # file path to hop log file, e.g. ~/hop.err.log
 ENV HOP_LOG_PATH=$DEPLOYMENT_PATH/hop.err.log
+# path to hop config directory
+ENV HOP_CONFIG_DIRECTORY=
+# environment to use with hop run
+ENV HOP_RUN_ENVIRONMENT=
 # hop run configuration to use
 ENV HOP_RUN_CONFIG=
 # parameters that should be passed on to the hop-run command
@@ -43,8 +48,10 @@ RUN apk update \
   && apk add --no-cache bash curl procps \ 
   && rm -rf /var/cache/apk/* \
   && mkdir ${DEPLOYMENT_PATH} \
+  && mkdir ${VOLUME_MOUNT_POINT} \
   && adduser -D -s /bin/bash -h /home/hop hop \
-  && chown hop:hop ${DEPLOYMENT_PATH}
+  && chown hop:hop ${DEPLOYMENT_PATH} \
+  && chown hop:hop ${VOLUME_MOUNT_POINT}
 
 #   && sed -i 's/^# en_US.UTF-8 UTF-8$/en_US.UTF-8 UTF-8/g' /etc/locale.gen \
 #   && locale-gen \
@@ -56,8 +63,7 @@ RUN apk update \
 COPY --chown=hop:hop ./resources/ ${DEPLOYMENT_PATH}
 
 # make volume available so that hop pipeline and workflow files can be provided easily
-# this one should also include the .pod config
-VOLUME ["/home/hop"]
+VOLUME ["/files"]
 USER hop
 ENV PATH=$PATH:${DEPLOYMENT_PATH}/hop
 WORKDIR /home/hop

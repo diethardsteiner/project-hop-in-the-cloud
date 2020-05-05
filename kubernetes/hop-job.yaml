@@ -29,7 +29,11 @@ spec:
           - name: HOP_LOG_LEVEL
             value: "Basic"
           - name: HOP_FILE_PATH
-            value: "/home/hop/project-hop-in-the-cloud/project-a/pipelines-and-workflows/main.hwf"
+            value: "/files/pipelines-and-workflows/main.hwf"
+          - name: HOP_CONFIG_DIRECTORY
+            value: "/files/config/hop/config"
+          - name: HOP_RUN_ENVIRONMENT
+            value: "project-a-dev"
           - name: HOP_RUN_CONFIG
             value: "classic"
           - name: HOP_RUN_PARAMETERS

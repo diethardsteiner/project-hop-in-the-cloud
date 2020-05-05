@@ -23,21 +23,24 @@ The container image is available on [Docker Hub](https://hub.docker.com/r/dietha
 Directory	| Description
 ---	|---
 `/opt/project-hop`	| location of the hop package
-`/home/hop`	| here you should mount a directory that contains `.hop` at the root as well your workflows and pipelines.
+`/files`	| here you should mount a directory that contains the **hop and project config** as well as the **workflows and pipelines**.
 
 ## Environment Variables
 
 You can provide values for the following environment variables:
 
 
-Environment Variable	| Description
----	|----
-`ENV HOP_LOG_LEVEL`	| Specify the log level. Default: `Basic`. Optional.
-`ENV HOP_FILE_PATH`	| Path to hop workflow or pipeline
-`ENV HOP_LOG_PATH`	| File path to hop log file
-`ENV HOP_RUN_CONFIG`	| Hop run configuration to use
-`ENV HOP_RUN_PARAMETERS`	| Parameters that should be passed on to the hop-run command. Specify as comma separated list, e.g. `PARAM_1=aaa,PARAM_2=bbb`. Optional.
+Environment Variable	| Required	| Description
+---	|----	|---
+`HOP_LOG_LEVEL`	| No	| Specify the log level. Default: `Basic`. Optional.
+`HOP_FILE_PATH`	| Yes	| Path to hop workflow or pipeline
+`HOP_LOG_PATH`	| No	| File path to hop log file
+`HOP_CONFIG_DIRECTORY`	| Yes	| Path to the Hop config folder
+`HOP_RUN_ENVIRONMENT`	| Yes	| Name of the Hop run environment to use
+`HOP_RUN_CONFIG`	| Yes	| Name of the Hop run configuration to use
+`HOP_RUN_PARAMETERS`	| No	| Parameters that should be passed on to the hop-run command. Specify as comma separated list, e.g. `PARAM_1=aaa,PARAM_2=bbb`. Optional.
 
+The `Required` column relates to running a short-lived container.
 
 ## How to run the Container
 
@@ -48,27 +51,26 @@ Example for running a **workflow**:
 ```bash
 docker run -it --rm \
   --env HOP_LOG_LEVEL=Basic \
-  --env HOP_FILE_PATH=/home/hop/pipelines-and-workflows/main.hwf \
+  --env HOP_FILE_PATH=/files/pipelines-and-workflows/main.hwf \
+  --env HOP_CONFIG_DIRECTORY=/files/config/hop/config \
+  --env HOP_RUN_ENVIRONMENT=project-a-dev \
   --env HOP_RUN_CONFIG=classic \
-  --env HOP_RUN_PARAMETERS=PARAM_TEST=Hello \
-  -v /Users/diethardsteiner/git/project-a:/home/hop \
+  --env HOP_RUN_PARAMETERS=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=1 \
+  -v ${WORKING_DIR}/project-a:/files \
   --name my-simple-hop-container \
-  diethardsteiner/project-hop:0.20-20200422.234410-25
+  diethardsteiner/project-hop:0.20-20200505.141953-75
 ```
 
 If you need a **long-lived container**, this option is also available. Run this command e.g.:
 
 ```bash
 docker run -it --rm \
-  -v /Users/diethardsteiner/git/project-a:/home/hop \
+  --env HOP_LOG_LEVEL=Basic \
+  --env HOP_CONFIG_DIRECTORY=/files/config/hop/config \
+  -v ${WORKING_DIR}/project-a:/home/hop \
   --name my-simple-hop-container \
-  diethardsteiner/project-hop:0.20-20200422.234410-25
+  diethardsteiner/project-hop:0.20-20200505.141953-75
 ```
-
-## Shortcomings
-
-- **Metastore**: `HOP_METASTORE_HOME` does not seem to be picked up by Hop. Moreover the Metastore is expected to reside in the default location (`$HOME/.hop/metastore`). Hence it is also not recommended to change `HOP_HOME`. The Metastore is require for the run configuration.
-- **Hop Server** is not supported yet.
 
 
 # Local Development
@@ -78,10 +80,12 @@ docker run -it --rm \
 To just test the workflow locally without Docker:
 
 ```
+export HOP_CONFIG_DIRECTORY=/Users/diethardsteiner/git/project-hop-in-the-cloud/project-a/config/hop/config
 ~/apps/hop/hop-run.sh \
   --file=/Users/diethardsteiner/git/project-hop-in-the-cloud/project-a/pipelines-and-workflows/main.hwf \
+  --environment=project-a-local \
   --runconfig=classic \
-  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=2
+  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=1
 ```
 
 To test the workflow within the **Docker container**:  
@@ -89,9 +93,14 @@ To test the workflow within the **Docker container**:
 ```
 ./hop-run.sh \
   --file=/home/hop/pipelines-and-workflows/main.hwf \
+  --environment=project-a-dev \
   --runconfig=classic \
-  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=2
+  --parameters=PARAM_LOG_MESSAGE=Hello,PARAM_WAIT_FOR_X_MINUTES=1
 ```
+
+## Shortcomings
+
+Currently the `hop-server` support is minimal.
 
 ## How to run the workflow within the Docker container
 

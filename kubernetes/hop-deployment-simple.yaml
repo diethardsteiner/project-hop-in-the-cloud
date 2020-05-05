@@ -20,6 +20,8 @@ spec:
         env:
           - name: HOP_LOG_LEVEL
             value: "Basic"
+          - name: HOP_CONFIG_DIRECTORY
+            value: "/files/config/hop/config"
         resources:
           requests:
             memory: "4Gi"
